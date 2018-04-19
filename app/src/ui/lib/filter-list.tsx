@@ -1,7 +1,11 @@
 import * as React from 'react'
 import * as classnames from 'classnames'
 
-import { List, SelectionSource as ListSelectionSource } from '../lib/list'
+import {
+  List,
+  SelectionSource as ListSelectionSource,
+  findNextSelectableRow,
+} from '../lib/list'
 import { TextBox } from '../lib/text-box'
 import { Row } from '../lib/row'
 
@@ -236,7 +240,11 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
 
   public selectFirstItem(focus: boolean = false) {
     if (this.list !== null) {
-      const next = this.list.nextSelectableRow('down', -1)
+      const next = findNextSelectableRow(
+        this.state.rows.length,
+        this.canSelectRow,
+        { direction: 'down', row: -1 }
+      )
 
       if (next !== null) {
         this.setState({ selectedRow: next })
@@ -333,8 +341,19 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
       return
     }
 
-    const firstSelectableRow = list.nextSelectableRow('down', -1)
-    const lastSelectableRow = list.nextSelectableRow('up', 0)
+    const rowCount = this.state.rows.length
+
+    const firstSelectableRow = findNextSelectableRow(
+      rowCount,
+      this.canSelectRow,
+      { direction: 'down', row: -1 }
+    )
+    const lastSelectableRow = findNextSelectableRow(
+      rowCount,
+      this.canSelectRow,
+      { direction: 'up', row: 0 }
+    )
+
     let shouldFocus = false
 
     if (event.key === 'ArrowUp' && row === firstSelectableRow) {
@@ -371,7 +390,11 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
 
     if (key === 'ArrowDown') {
       if (this.state.rows.length > 0) {
-        const selectedRow = list.nextSelectableRow('down', -1)
+        const selectedRow = findNextSelectableRow(
+          this.state.rows.length,
+          this.canSelectRow,
+          { direction: 'down', row: -1 }
+        )
         if (selectedRow != null) {
           this.setState({ selectedRow }, () => {
             list.focus()
@@ -382,7 +405,11 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
       event.preventDefault()
     } else if (key === 'ArrowUp') {
       if (this.state.rows.length > 0) {
-        const selectedRow = list.nextSelectableRow('up', 0)
+        const selectedRow = findNextSelectableRow(
+          this.state.rows.length,
+          this.canSelectRow,
+          { direction: 'up', row: 0 }
+        )
         if (selectedRow != null) {
           this.setState({ selectedRow }, () => {
             list.focus()
@@ -403,7 +430,11 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
         return event.preventDefault()
       }
 
-      const row = list.nextSelectableRow('down', -1)
+      const row = findNextSelectableRow(
+        this.state.rows.length,
+        this.canSelectRow,
+        { direction: 'down', row: -1 }
+      )
 
       if (row) {
         this.onRowClick(row)
