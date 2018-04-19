@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { Grid, AutoSizer } from 'react-virtualized'
 import { shallowEquals } from '../../../lib/equality'
 import { ListRow } from './list-row'
-import { findNextSelectableRow } from './selection'
+import { findNextSelectableRow, SelectionDirection } from './selection'
 import { createUniqueId, releaseUniqueId } from '../../lib/id-pool'
 
 /**
@@ -329,7 +329,7 @@ export class List extends React.Component<IListProps, IListState> {
   }
 
   private moveSelection(
-    direction: 'up' | 'down',
+    direction: SelectionDirection,
     event: React.KeyboardEvent<any>
   ) {
     const newRow = findNextSelectableRow(
