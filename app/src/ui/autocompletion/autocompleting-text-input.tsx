@@ -96,7 +96,6 @@ export abstract class AutocompletingTextInput<
   IAutocompletingTextInputState<Object>
 > {
   private element: ElementType | null = null
-  private autocompletionList: List | null = null
 
   /** The identifier for each autocompletion request. */
   private autocompletionRequestID = 0
@@ -120,10 +119,6 @@ export abstract class AutocompletingTextInput<
         {state.provider.renderItem(item)}
       </div>
     )
-  }
-
-  private storeAutocompletionListRef = (ref: List | null) => {
-    this.autocompletionList = ref
   }
 
   private renderAutocompletions() {
@@ -180,7 +175,6 @@ export abstract class AutocompletingTextInput<
     return (
       <div className={className} style={{ top, left, height }}>
         <List
-          ref={this.storeAutocompletionListRef}
           rowCount={items.length}
           rowHeight={RowHeight}
           selectedRow={selectedRow}
